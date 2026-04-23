@@ -244,7 +244,7 @@ class Web_Anchetas_Seeder {
                 'price' => '199000',
                 'category' => 'regalos-empresariales',
                 'short_description' => 'Regalo corporativo para clientes, aliados y equipos.',
-                'description' => '<p>Una soluzione premium para empresas que quieren sorprender con una presentacion impecable. Ideal para reconocimientos, cierres de negocio y fechas especiales.</p><ul><li>Presentacion corporativa</li><li>Opcion personalizable</li><li>Atencion para pedidos por volumen</li></ul>',
+                'description' => '<p>Una solucion premium para empresas que quieren sorprender con una presentacion impecable. Ideal para reconocimientos, cierres de negocio y fechas especiales.</p><ul><li>Presentacion corporativa</li><li>Opcion personalizable</li><li>Atencion para pedidos por volumen</li></ul>',
             ),
         );
 
@@ -340,8 +340,44 @@ class Web_Anchetas_Seeder {
         );
     }
 
+    private static function shop_url() {
+        if (function_exists('wc_get_page_permalink')) {
+            return esc_url(wc_get_page_permalink('shop'));
+        }
+
+        $page_id = (int) get_option('woocommerce_shop_page_id');
+        if ($page_id) {
+            return esc_url(get_permalink($page_id));
+        }
+
+        return esc_url(home_url('/shop/'));
+    }
+
+    private static function contact_url() {
+        $page = get_page_by_path('contact-us', OBJECT, 'page');
+        if ($page) {
+            return esc_url(get_permalink($page));
+        }
+
+        return esc_url(home_url('/contact-us/'));
+    }
+
+    private static function category_url($slug) {
+        if (taxonomy_exists('product_cat')) {
+            $term = get_term_by('slug', $slug, 'product_cat');
+            if ($term && ! is_wp_error($term)) {
+                return esc_url(get_term_link($term));
+            }
+        }
+
+        return esc_url(home_url('/product-category/' . $slug . '/'));
+    }
+
     private static function home_content() {
-        return '<section><h1>Anchetas Medellin</h1><p>Regalos con entrega a domicilio para cumpleanos, aniversarios, fechas especiales y detalles empresariales en Medellin.</p><p><a href="/shop/">Ver tienda</a> | <a href="/contact-us/">Solicitar cotizacion</a></p></section><section><h2>Nuestras lineas principales</h2><ul><li>Anchetas de cumpleanos con chocolates, snacks y mensajes personalizados</li><li>Desayunos sorpresa para parejas, familia y celebraciones especiales</li><li>Anchetas romanticas para aniversarios y momentos inolvidables</li><li>Regalos empresariales para clientes, aliados y colaboradores</li></ul></section><section><h2>Por que elegirnos</h2><ul><li>Entrega en Medellin</li><li>Presentacion cuidada y lista para sorprender</li><li>Opciones personalizadas segun presupuesto</li><li>Atencion cercana y rapida</li></ul></section><section><h2>Haz tu pedido</h2><p>Te ayudamos a elegir la ancheta ideal segun la ocasion, el presupuesto y el estilo del regalo que quieres enviar.</p><p><a href="/shop/">Comprar ahora</a></p></section>';
+        $shop_url    = self::shop_url();
+        $contact_url = self::contact_url();
+
+        return '<section><h1>Anchetas Medellin</h1><p>Regalos con entrega a domicilio para cumpleanos, aniversarios, fechas especiales y detalles empresariales en Medellin.</p><p><a href="' . $shop_url . '">Ver tienda</a> | <a href="' . $contact_url . '">Solicitar cotizacion</a></p></section><section><h2>Nuestras lineas principales</h2><ul><li>Anchetas de cumpleanos con chocolates, snacks y mensajes personalizados</li><li>Desayunos sorpresa para parejas, familia y celebraciones especiales</li><li>Anchetas romanticas para aniversarios y momentos inolvidables</li><li>Regalos empresariales para clientes, aliados y colaboradores</li></ul></section><section><h2>Por que elegirnos</h2><ul><li>Entrega en Medellin</li><li>Presentacion cuidada y lista para sorprender</li><li>Opciones personalizadas segun presupuesto</li><li>Atencion cercana y rapida</li></ul></section><section><h2>Haz tu pedido</h2><p>Te ayudamos a elegir la ancheta ideal segun la ocasion, el presupuesto y el estilo del regalo que quieres enviar.</p><p><a href="' . $shop_url . '">Comprar ahora</a></p></section>';
     }
 
     private static function about_content() {
@@ -353,18 +389,26 @@ class Web_Anchetas_Seeder {
     }
 
     private static function birthday_page_content() {
-        return '<section><h1>Anchetas de cumpleanos</h1><p>Tenemos opciones pensadas para sorprender en cumpleanos con chocolates, snacks, bebidas, decoracion y mensajes personalizados.</p><ul><li>Presentaciones clasicas y premium</li><li>Opciones para hombres, mujeres y ninos</li><li>Entrega a domicilio en Medellin</li></ul><p><a href="/product-category/anchetas-cumpleanos/">Ver categoria</a></p></section>';
+        $category_url = self::category_url('anchetas-cumpleanos');
+
+        return '<section><h1>Anchetas de cumpleanos</h1><p>Tenemos opciones pensadas para sorprender en cumpleanos con chocolates, snacks, bebidas, decoracion y mensajes personalizados.</p><ul><li>Presentaciones clasicas y premium</li><li>Opciones para hombres, mujeres y ninos</li><li>Entrega a domicilio en Medellin</li></ul><p><a href="' . $category_url . '">Ver categoria</a></p></section>';
     }
 
     private static function breakfast_page_content() {
-        return '<section><h1>Desayunos sorpresa</h1><p>Desayunos especiales para celebrar desde temprano con un detalle bonito y bien presentado.</p><ul><li>Ideal para parejas y familia</li><li>Entrega programada</li><li>Opciones con dulce, fruta y panaderia</li></ul><p><a href="/product-category/desayunos-sorpresa/">Ver categoria</a></p></section>';
+        $category_url = self::category_url('desayunos-sorpresa');
+
+        return '<section><h1>Desayunos sorpresa</h1><p>Desayunos especiales para celebrar desde temprano con un detalle bonito y bien presentado.</p><ul><li>Ideal para parejas y familia</li><li>Entrega programada</li><li>Opciones con dulce, fruta y panaderia</li></ul><p><a href="' . $category_url . '">Ver categoria</a></p></section>';
     }
 
     private static function business_page_content() {
-        return '<section><h1>Regalos empresariales</h1><p>Preparamos anchetas empresariales para clientes, equipos y eventos corporativos con una presentacion profesional y personalizable.</p><ul><li>Pedidos por volumen</li><li>Opciones segun presupuesto</li><li>Ideal para reconocimientos y fechas especiales</li></ul><p><a href="/product-category/regalos-empresariales/">Ver categoria</a></p></section>';
+        $category_url = self::category_url('regalos-empresariales');
+
+        return '<section><h1>Regalos empresariales</h1><p>Preparamos anchetas empresariales para clientes, equipos y eventos corporativos con una presentacion profesional y personalizable.</p><ul><li>Pedidos por volumen</li><li>Opciones segun presupuesto</li><li>Ideal para reconocimientos y fechas especiales</li></ul><p><a href="' . $category_url . '">Ver categoria</a></p></section>';
     }
 
     private static function romantic_page_content() {
-        return '<section><h1>Anchetas romanticas</h1><p>Detalles para aniversarios, reconciliaciones, celebraciones de pareja y momentos especiales.</p><ul><li>Mensajes personalizados</li><li>Presentacion elegante</li><li>Opciones con chocolates y bebida</li></ul><p><a href="/product-category/anchetas-romanticas/">Ver categoria</a></p></section>';
+        $category_url = self::category_url('anchetas-romanticas');
+
+        return '<section><h1>Anchetas romanticas</h1><p>Detalles para aniversarios, reconciliaciones, celebraciones de pareja y momentos especiales.</p><ul><li>Mensajes personalizados</li><li>Presentacion elegante</li><li>Opciones con chocolates y bebida</li></ul><p><a href="' . $category_url . '">Ver categoria</a></p></section>';
     }
 }
