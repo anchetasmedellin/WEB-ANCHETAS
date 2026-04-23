@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: WEB ANCHETAS
- * Description: Configuracion inicial del sitio y del catalogo para Anchetas Medellin.
- * Version: 0.1.0
+ * Description: Configuracion premium del sitio y del catalogo para Anchetas Medellin Premium.
+ * Version: 0.2.0
  * Author: Codex
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -12,7 +12,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('WEB_ANCHETAS_VERSION', '0.1.0');
+define('WEB_ANCHETAS_VERSION', '0.2.0');
 define('WEB_ANCHETAS_FILE', __FILE__);
 define('WEB_ANCHETAS_PATH', plugin_dir_path(__FILE__));
 
@@ -46,7 +46,7 @@ function web_anchetas_render_admin_page() {
 
         $result  = Web_Anchetas_Seeder::seed_site();
         $message = sprintf(
-            'Configuracion aplicada. Paginas: %d. Categorias: %d. Productos: %d.',
+            'Actualizacion premium aplicada. Paginas: %d. Categorias: %d. Productos: %d.',
             count($result['pages']),
             count($result['categories']),
             count($result['products'])
@@ -55,22 +55,22 @@ function web_anchetas_render_admin_page() {
 
     echo '<div class="wrap">';
     echo '<h1>WEB ANCHETAS</h1>';
-    echo '<p>Este plugin crea la base inicial de Anchetas Medellin en WordPress y WooCommerce.</p>';
+    echo '<p>Este plugin crea y actualiza la version premium de Anchetas Medellin Premium en WordPress y WooCommerce.</p>';
 
     if ($message) {
         echo '<div class="notice notice-success"><p>' . esc_html($message) . '</p></div>';
     }
 
     echo '<ul style="list-style:disc; padding-left:20px;">';
-    echo '<li>Actualiza la portada principal del sitio.</li>';
-    echo '<li>Crea paginas comerciales en espanol.</li>';
-    echo '<li>Crea categorias y productos iniciales de WooCommerce.</li>';
-    echo '<li>Traduce los titulos base de WooCommerce.</li>';
+    echo '<li>Renueva la portada principal con estilo premium.</li>';
+    echo '<li>Crea landing pages comerciales con los enlaces principales del sitio de referencia.</li>';
+    echo '<li>Actualiza contacto, cobertura, pagos y facturacion electronica.</li>';
+    echo '<li>Crea o actualiza categorias y productos iniciales de WooCommerce.</li>';
     echo '</ul>';
 
     echo '<form method="post">';
     wp_nonce_field('web_anchetas_seed_site');
-    submit_button('Crear o actualizar contenido inicial', 'primary', 'web_anchetas_seed_site');
+    submit_button('Aplicar version premium del sitio', 'primary', 'web_anchetas_seed_site');
     echo '</form>';
     echo '</div>';
 }
